@@ -1,0 +1,36 @@
+server:
+  port: 8080
+  host: 0.0.0.0
+
+security:
+  enabled: false
+
+db:
+  source: jdbc
+  connection:
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
+    poolName: h2
+    initializationFailTimeout: -1
+    connectionTimeout: 2000
+    helidon:
+      pool-metrics:
+        enabled: true
+        name-prefix: "hikari."
+  services:
+    metrics:
+      - type: METER
+  health-check:
+    type: "dml"
+    statementName: "ping"
+  statements:
+    ping: "SET @HELIDON_PING=0"
+    create-book-table: "CREATE TABLE BOOK (name VARCHAR(256) NOT NULL, author VARCHAR(256) NOT NULL, isbn VARCHAR(256) NOT NULL PRIMARY KEY, language VARCHAR(32) NOT NULL)"
+    select-all-book: "SELECT * FROM BOOK"
+    select-book-by-isbn: "SELECT * FROM BOOK WHERE isbn = :isbn"
+    insert-book: "INSERT INTO BOOK VALUES(?, ?, ?, ?)"
+    delete-book-by-isbn: "DELETE FROM BOOK WHERE isbn = :isbn"
+    update-book-by-isbn: "UPDATE BOOK SET name = :name, author = :author, isbn = :isbn, language = :language WHERE isbn = :old_isbn"
+
+
